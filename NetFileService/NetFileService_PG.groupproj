@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{0E63ADA3-BB45-4DBF-845A-DD84B1148773}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="NetFileService.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="NetFileClient.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="NetFileService">
+        <MSBuild Projects="NetFileService.dproj"/>
+    </Target>
+    <Target Name="NetFileService:Clean">
+        <MSBuild Projects="NetFileService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NetFileService:Make">
+        <MSBuild Projects="NetFileService.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NetFileClient">
+        <MSBuild Projects="NetFileClient.dproj"/>
+    </Target>
+    <Target Name="NetFileClient:Clean">
+        <MSBuild Projects="NetFileClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NetFileClient:Make">
+        <MSBuild Projects="NetFileClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="NetFileService;NetFileClient"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="NetFileService:Clean;NetFileClient:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="NetFileService:Make;NetFileClient:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
