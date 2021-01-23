@@ -84,7 +84,7 @@ object NetFileClientForm: TNetFileClientForm
         LabelPosition = lpLeft
         PasswordChar = '*'
         TabOrder = 1
-        Text = '123456'
+        Text = 'admin'
       end
       object GoButton: TButton
         Left = 263
