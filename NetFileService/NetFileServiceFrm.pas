@@ -108,9 +108,9 @@ begin
 
   FRecv.SwitchMaxSecurity;
   FSend.SwitchMaxSecurity;
-  FRecv.QuietMode := True;
-  FSend.QuietMode := True;
-  QuietMode := True;
+  FRecv.QuietMode := False;
+  FSend.QuietMode := False;
+  QuietMode := False;
 
   FDoubleTunnel := TCommunicationFramework_DoubleTunnelService_NoAuth.Create(FRecv, FSend);
   FDoubleTunnel.RegisterCommand;
@@ -207,7 +207,7 @@ var
   te: THashTextEngine;
 begin
   te := THashTextEngine.Create;
-  te.LoadFromFile(umlCombineFileName(TPath.GetLibraryPath, 'NetFileService.ini'));
+  te.LoadFromFile(umlCombineFileName(TPath.GetDocumentsPath, 'NetFileService.ini'));
   BindEdit.Text := te.GetDefaultText('main', 'bind', BindEdit.Text);
   PortEdit.Text := te.GetDefaultText('main', 'port', PortEdit.Text);
   PasswdEdit.Text := te.GetDefaultText('main', 'password', PasswdEdit.Text);
@@ -224,7 +224,7 @@ begin
   te.SetDefaultText('main', 'port', PortEdit.Text);
   te.SetDefaultText('main', 'password', PasswdEdit.Text);
   te.SetDefaultText('main', 'directory', ShareDirEdit.Text);
-  te.SaveToFile(umlCombineFileName(TPath.GetLibraryPath, 'NetFileService.ini'));
+  te.SaveToFile(umlCombineFileName(TPath.GetDocumentsPath, 'NetFileService.ini'));
   disposeObject(te);
 end;
 

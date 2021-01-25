@@ -6,6 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
 
+  Winapi.ShellAPI,
+
   System.IOUtils, Vcl.FileCtrl, System.DateUtils,
 
   CoreClasses,
@@ -14,12 +16,12 @@ uses
   CommunicationFramework, PhysicsIO, CommunicationFrameworkDoubleTunnelIO_NoAuth;
 
 type
-  TNetFileClientForm = class(TForm, ICommunicationFrameworkClientInterface)
+  TNetFileClientForm = class(TForm, ICommunicationFrameworkClientInterface, IOnBigStreamInterface)
     GlobalCliPanel: TPanel;
     topPanel: TPanel;
     ListView: TListView;
     HostEdit: TLabeledEdit;
-    PasswdEdit: TLabeledEdit;
+    PasswdEdit: TEdit;
     GoButton: TButton;
     progressTimer: TTimer;
     RefreshButton: TButton;
@@ -33,6 +35,7 @@ type
     StateTimer: TTimer;
     OpenDialog: TOpenDialog;
     DeleteButton: TButton;
+    ShowPasswd_CheckBox: TCheckBox;
     procedure progressTimerTimer(Sender: TObject);
     procedure StateTimerTimer(Sender: TObject);
     procedure GoButtonClick(Sender: TObject);
@@ -43,18 +46,28 @@ type
     procedure DelayLabelClick(Sender: TObject);
     procedure ListViewColumnClick(Sender: TObject; Column: TListColumn);
     procedure ListViewKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure PasswdEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ShowPasswd_CheckBoxClick(Sender: TObject);
   private
     // connection state
     procedure ClientConnected(Sender: TCommunicationFrameworkClient);
     procedure ClientDisconnect(Sender: TCommunicationFrameworkClient);
+    // big stream state
+    procedure BeginStream(Sender: TPeerIO; Total: Int64);
+    procedure Process(Sender: TPeerIO; Total, current: Int64);
+    procedure EndStream(Sender: TPeerIO; Total: Int64);
+
+    procedure WMDROPFILES_(var MSG: TMessage); message WM_DROPFILES;
 
     // dostatus
     procedure DoStatus_Backcall(Text_: SystemString; const ID: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure GoOrClose;
     procedure RefreshFileList;
     procedure DownloadSelected(var DestDir: SystemString);
+    procedure Upload(file_: U_String);
     procedure OpenDialogAndUpload();
     procedure DeleteSelected();
   end;
@@ -89,7 +102,7 @@ implementation
 
 uses ProgressBarFrm;
 
-function CompInt(const A, b: Integer): Integer; inline;
+function CompInt(const A, b: Int64): Integer; inline;
 begin
   if A = b then
       Result := 0
@@ -164,9 +177,9 @@ begin
 
   FRecv.SwitchMaxSecurity;
   FSend.SwitchMaxSecurity;
-  FRecv.QuietMode := True;
-  FSend.QuietMode := True;
-  QuietMode := True;
+  FRecv.QuietMode := False;
+  FSend.QuietMode := False;
+  QuietMode := False;
 
   FDoubleTunnel := TCommunicationFramework_DoubleTunnelClient_NoAuth.Create(FRecv, FSend);
   FDoubleTunnel.RegisterCommand;
@@ -187,30 +200,9 @@ begin
 end;
 
 procedure TNetFileClientForm.progressTimerTimer(Sender: TObject);
-var
-  Total, Complete: Int64;
 begin
   NetFileClient.Progress;
   CheckThreadSynchronize;
-
-  if NetFileClient.Connected and NetFileClient.FDoubleTunnel.LinkOk then
-    begin
-      if NetFileClient.FRecv.ClientIO.GetBigStreamReceiveState(Total, Complete) or NetFileClient.FSend.ClientIO.GetBigStreamSendingState(Total, Complete) then
-        begin
-          if not ProgressBarForm.Visible then
-            begin
-              ProgressBarForm.Show;
-              ProgressBarForm.ProgressBar.Min := 0;
-              ProgressBarForm.ProgressBar.Max := 100;
-            end;
-          ProgressBarForm.ProgressBar.Position := umlPercentageToInt64(Total, Complete);
-          ProgressBarForm.InfoLabel.Caption := Format('complete: %s/%s', [umlSizeToStr(Complete).Text, umlSizeToStr(Total).Text]);
-        end
-      else
-        begin
-          ProgressBarForm.Close;
-        end;
-    end;
 end;
 
 procedure TNetFileClientForm.StateTimerTimer(Sender: TObject);
@@ -220,39 +212,8 @@ begin
 end;
 
 procedure TNetFileClientForm.GoButtonClick(Sender: TObject);
-var
-  host_: U_String;
-  port_: Word;
 begin
-  if NetFileClient.Connected then
-    begin
-      NetFileClient.Disconnect;
-      Exit;
-    end;
-
-  DelayLabel.Caption := '..';
-  NetFileClient.AutomatedP2PVMAuthToken := PasswdEdit.Text;
-  NetFileClient.OnAutomatedP2PVMClientConnectionDone_P := procedure(Sender: TCommunicationFramework; P_IO: TPeerIO)
-    begin
-      NetFileClient.FDoubleTunnel.TunnelLinkP(procedure(const State: Boolean)
-        begin
-          if State then
-            begin
-              DelayLabel.Caption := Format('ping %d MS', [round(NetFileClient.FDoubleTunnel.ServerDelay * 1000)]);
-              RefreshFileList;
-              GoButton.Caption := 'Close';
-            end;
-        end);
-    end;
-
-  port_ := 7456;
-  host_ := HostEdit.Text;
-  ExtractHostAddress(host_, port_);
-
-  NetFileClient.AsyncConnectP(
-    host_, port_, procedure(const State: Boolean)
-    begin
-    end);
+  GoOrClose;
 end;
 
 procedure TNetFileClientForm.RefreshButtonClick(Sender: TObject);
@@ -290,6 +251,28 @@ begin
     end);
 end;
 
+procedure TNetFileClientForm.ListViewColumnClick(Sender: TObject; Column: TListColumn);
+var
+  i: Integer;
+begin
+  // reset other sort column
+  for i := 0 to ListView.Columns.Count - 1 do
+    if ListView.Columns[i] <> Column then
+        ListView.Columns[i].Tag := 0;
+
+  // imp sort
+  if Column.Tag = 0 then
+    begin
+      ListView.CustomSort(@LV_Sort1, Column.Index);
+      Column.Tag := 1;
+    end
+  else
+    begin
+      ListView.CustomSort(@LV_Sort2, Column.Index);
+      Column.Tag := 0;
+    end;
+end;
+
 procedure TNetFileClientForm.ListViewKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if ListView.IsEditing then
@@ -298,6 +281,20 @@ begin
     VK_F5: RefreshButtonClick(RefreshButton);
     VK_DELETE: DeleteButtonClick(DeleteButton);
   end;
+end;
+
+procedure TNetFileClientForm.PasswdEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+      GoButtonClick(GoButton);
+end;
+
+procedure TNetFileClientForm.ShowPasswd_CheckBoxClick(Sender: TObject);
+begin
+  if ShowPasswd_CheckBox.Checked then
+      PasswdEdit.PasswordChar := #0
+  else
+      PasswdEdit.PasswordChar := '*';
 end;
 
 procedure TNetFileClientForm.ClientConnected(Sender: TCommunicationFrameworkClient);
@@ -312,6 +309,56 @@ begin
   ListView.Items.EndUpdate;
   DelayLabel.Caption := '..';
   GoButton.Caption := 'GO';
+  DragAcceptFiles(Handle, False);
+end;
+
+procedure TNetFileClientForm.BeginStream(Sender: TPeerIO; Total: Int64);
+begin
+  if not ProgressBarForm.Visible then
+    begin
+      ProgressBarForm.Position := TPosition.poMainFormCenter;
+      ProgressBarForm.Show;
+      ProgressBarForm.ProgressBar.Min := 0;
+      ProgressBarForm.ProgressBar.Max := 100;
+    end;
+  ProgressBarForm.ProgressBar.Position := 0;
+  ProgressBarForm.InfoLabel.Caption := Format('complete: %s/%s', [umlSizeToStr(0).Text, umlSizeToStr(Total).Text]);
+end;
+
+procedure TNetFileClientForm.Process(Sender: TPeerIO; Total, current: Int64);
+begin
+  ProgressBarForm.ProgressBar.Position := umlPercentageToInt64(Total, current);
+  ProgressBarForm.InfoLabel.Caption := Format('complete: %s/%s', [umlSizeToStr(current).Text, umlSizeToStr(Total).Text]);
+end;
+
+procedure TNetFileClientForm.EndStream(Sender: TPeerIO; Total: Int64);
+begin
+  ProgressBarForm.Close;
+end;
+
+procedure TNetFileClientForm.WMDROPFILES_(var MSG: TMessage);
+var
+  fNum, i: Integer;
+  buffer: array [0 .. $FFFF] of Char;
+begin
+  fillPtr(@buffer, sizeOf(buffer), 0);
+  try
+    fNum := DragQueryFile(MSG.WParam, $FFFFFFFF, nil, 0);
+    if fNum > 0 then
+      begin
+        for i := 0 to fNum - 1 do
+          begin
+            DragQueryFile(MSG.WParam, i, buffer, $FFFF);
+            Upload(StrPas(buffer));
+          end;
+        NetFileClient.FSend.ClientIO.IO_IDLE_TraceP(nil, procedure(Data: TCoreClassObject)
+          begin
+            RefreshFileList;
+          end);
+      end;
+  finally
+      DragFinish(MSG.WParam);
+  end;
 end;
 
 procedure TNetFileClientForm.DoStatus_Backcall(Text_: SystemString; const ID: Integer);
@@ -327,6 +374,8 @@ begin
   AddDoStatusHook(self, DoStatus_Backcall);
   NetFileClient := TNetFileClient.Create;
   NetFileClient.OnInterface := self;
+  NetFileClient.FRecv.OnBigStreamInterface := self;
+  NetFileClient.FSend.OnBigStreamInterface := self;
   DownloadDirectory := TPath.GetLibraryPath;
 end;
 
@@ -338,6 +387,43 @@ begin
 
   DisposeObject(NetFileClient);
   inherited Destroy;
+end;
+
+procedure TNetFileClientForm.GoOrClose;
+var
+  host_: U_String;
+  port_: Word;
+begin
+  if NetFileClient.Connected then
+    begin
+      NetFileClient.Disconnect;
+      Exit;
+    end;
+
+  DelayLabel.Caption := '..';
+  NetFileClient.AutomatedP2PVMAuthToken := PasswdEdit.Text;
+  NetFileClient.OnAutomatedP2PVMClientConnectionDone_P := procedure(Sender: TCommunicationFramework; P_IO: TPeerIO)
+    begin
+      NetFileClient.FDoubleTunnel.TunnelLinkP(procedure(const State: Boolean)
+        begin
+          if State then
+            begin
+              DelayLabel.Caption := Format('ping %d MS', [round(NetFileClient.FDoubleTunnel.ServerDelay * 1000)]);
+              RefreshFileList;
+              GoButton.Caption := 'Close';
+              DragAcceptFiles(Handle, True);
+            end;
+        end);
+    end;
+
+  port_ := 7456;
+  host_ := HostEdit.Text;
+  ExtractHostAddress(host_, port_);
+
+  NetFileClient.AsyncConnectP(
+    host_, port_, procedure(const State: Boolean)
+    begin
+    end);
 end;
 
 procedure TNetFileClientForm.RefreshFileList;
@@ -381,6 +467,11 @@ begin
             end;
           DisposeObject(tmp);
         end;
+
+      for i := 0 to ListView.Columns.Count - 1 do
+          ListView.Columns[i].Tag := 0;
+      ListView.CustomSort(@LV_Sort2, 2);
+
       ListView.Items.EndUpdate;
       ListView.Width := ListView.Width - 1;
     end);
@@ -426,6 +517,11 @@ begin
     end;
 end;
 
+procedure TNetFileClientForm.Upload(file_: U_String);
+begin
+  NetFileClient.FDoubleTunnel.AutomatedUploadFile(file_);
+end;
+
 procedure TNetFileClientForm.OpenDialogAndUpload;
 var
   i: Integer;
@@ -433,7 +529,12 @@ begin
   if not OpenDialog.Execute then
       Exit;
   for i := 0 to OpenDialog.Files.Count - 1 do
-      NetFileClient.FDoubleTunnel.AutomatedUploadFile(OpenDialog.Files[i]);
+      Upload(OpenDialog.Files[i]);
+
+  NetFileClient.FSend.ClientIO.IO_IDLE_TraceP(nil, procedure(Data: TCoreClassObject)
+    begin
+      RefreshFileList;
+    end);
 end;
 
 procedure TNetFileClientForm.DeleteSelected;
@@ -450,28 +551,6 @@ begin
         NetFileClient.FSend.SendDirectConsoleCmd('DeleteFile', rn);
       end;
   RefreshFileList;
-end;
-
-procedure TNetFileClientForm.ListViewColumnClick(Sender: TObject; Column: TListColumn);
-var
-  i: Integer;
-begin
-  // reset other sort column
-  for i := 0 to ListView.columns.Count - 1 do
-    if ListView.columns[i] <> Column then
-        ListView.columns[i].Tag := 0;
-
-  // imp sort
-  if Column.Tag = 0 then
-    begin
-      ListView.CustomSort(@LV_Sort1, Column.Index);
-      Column.Tag := 1;
-    end
-  else
-    begin
-      ListView.CustomSort(@LV_Sort2, Column.Index);
-      Column.Tag := 0;
-    end;
 end;
 
 end.

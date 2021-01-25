@@ -7,7 +7,7 @@ object ProgressBarForm: TProgressBarForm
   BorderWidth = 20
   Caption = 'Progress...'
   ClientHeight = 44
-  ClientWidth = 497
+  ClientWidth = 361
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -31,7 +31,7 @@ object ProgressBarForm: TProgressBarForm
   object ProgressBar: TProgressBar
     Left = 0
     Top = 19
-    Width = 497
+    Width = 361
     Height = 25
     TabOrder = 0
   end

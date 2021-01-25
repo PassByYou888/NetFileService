@@ -107,6 +107,7 @@ object NetFileServiceForm: TNetFileServiceForm
     Top = 175
     Width = 477
     Height = 89
+    ScrollBars = ssVertical
     TabOrder = 7
     WordWrap = False
   end
@@ -120,7 +121,7 @@ object NetFileServiceForm: TNetFileServiceForm
     OnClick = ShowPasswdCheckBoxClick
   end
   object progressTimer: TTimer
-    Interval = 10
+    Interval = 5
     OnTimer = progressTimerTimer
     Left = 272
     Top = 32

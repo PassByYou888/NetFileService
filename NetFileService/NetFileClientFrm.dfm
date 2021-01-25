@@ -3,10 +3,10 @@ object NetFileClientForm: TNetFileClientForm
   Top = 0
   Caption = 'Net File Client.'
   ClientHeight = 432
-  ClientWidth = 709
+  ClientWidth = 784
   Color = clBtnFace
   Constraints.MinHeight = 470
-  Constraints.MinWidth = 725
+  Constraints.MinWidth = 800
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,15 +20,16 @@ object NetFileClientForm: TNetFileClientForm
   object GlobalCliPanel: TPanel
     Left = 0
     Top = 0
-    Width = 709
+    Width = 784
     Height = 432
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 709
     object Splitter: TSplitter
       Left = 0
       Top = 338
-      Width = 709
+      Width = 784
       Height = 5
       Cursor = crVSplit
       Align = alBottom
@@ -40,18 +41,19 @@ object NetFileClientForm: TNetFileClientForm
     object topPanel: TPanel
       Left = 0
       Top = 0
-      Width = 709
+      Width = 784
       Height = 33
       Align = alTop
       BevelOuter = bvNone
       DoubleBuffered = True
       ParentDoubleBuffered = False
       TabOrder = 0
+      ExplicitWidth = 709
       DesignSize = (
-        709
+        784
         33)
       object DelayLabel: TLabel
-        Left = 691
+        Left = 766
         Top = 8
         Width = 8
         Height = 13
@@ -64,48 +66,45 @@ object NetFileClientForm: TNetFileClientForm
       object HostEdit: TLabeledEdit
         Left = 76
         Top = 5
-        Width = 69
+        Width = 85
         Height = 21
         EditLabel.Width = 66
         EditLabel.Height = 13
         EditLabel.Caption = 'Host(ip:port):'
         LabelPosition = lpLeft
         TabOrder = 0
-        Text = '127.0.0.1'
+        Text = '127.0.0.1:7456'
       end
-      object PasswdEdit: TLabeledEdit
-        Left = 204
-        Top = 5
+      object PasswdEdit: TEdit
+        Left = 264
+        Top = 6
         Width = 53
         Height = 21
-        EditLabel.Width = 50
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Password:'
-        LabelPosition = lpLeft
         PasswordChar = '*'
-        TabOrder = 1
+        TabOrder = 2
         Text = 'admin'
+        OnKeyUp = PasswdEditKeyUp
       end
       object GoButton: TButton
-        Left = 263
-        Top = 3
-        Width = 42
+        Left = 323
+        Top = 2
+        Width = 54
         Height = 25
         Caption = 'GO'
-        TabOrder = 2
+        TabOrder = 3
         OnClick = GoButtonClick
       end
       object RefreshButton: TButton
-        Left = 375
+        Left = 470
         Top = 3
         Width = 47
         Height = 25
-        Caption = 'refresh'
-        TabOrder = 4
+        Caption = 'Refresh'
+        TabOrder = 5
         OnClick = RefreshButtonClick
       end
       object FilterEdit: TLabeledEdit
-        Left = 339
+        Left = 434
         Top = 6
         Width = 33
         Height = 21
@@ -113,41 +112,50 @@ object NetFileClientForm: TNetFileClientForm
         EditLabel.Height = 13
         EditLabel.Caption = 'filter:'
         LabelPosition = lpLeft
-        TabOrder = 3
+        TabOrder = 4
         Text = '*'
       end
       object DownloadButton: TButton
-        Left = 471
+        Left = 566
         Top = 3
         Width = 57
         Height = 25
         Caption = 'Download'
-        TabOrder = 6
+        TabOrder = 7
         OnClick = DownloadButtonClick
       end
       object UploadButton: TButton
-        Left = 425
+        Left = 520
         Top = 3
         Width = 46
         Height = 25
         Caption = 'Upload'
-        TabOrder = 5
+        TabOrder = 6
         OnClick = UploadButtonClick
       end
       object DeleteButton: TButton
-        Left = 533
+        Left = 628
         Top = 3
         Width = 42
         Height = 25
         Caption = 'Delete'
-        TabOrder = 7
+        TabOrder = 8
         OnClick = DeleteButtonClick
+      end
+      object ShowPasswd_CheckBox: TCheckBox
+        Left = 165
+        Top = 8
+        Width = 96
+        Height = 17
+        Caption = 'Show Password'
+        TabOrder = 1
+        OnClick = ShowPasswd_CheckBoxClick
       end
     end
     object ListView: TListView
       Left = 0
       Top = 33
-      Width = 709
+      Width = 784
       Height = 305
       Align = alClient
       Columns = <
@@ -169,28 +177,31 @@ object NetFileClientForm: TNetFileClientForm
           Width = 60
         end>
       HideSelection = False
-      HotTrack = True
       MultiSelect = True
       ReadOnly = True
       ShowWorkAreas = True
       TabOrder = 1
       ViewStyle = vsReport
       OnColumnClick = ListViewColumnClick
+      OnDblClick = DownloadButtonClick
       OnKeyUp = ListViewKeyUp
+      ExplicitWidth = 709
     end
     object Memo: TMemo
       Left = 0
       Top = 343
-      Width = 709
+      Width = 784
       Height = 89
       Align = alBottom
+      ReadOnly = True
       ScrollBars = ssVertical
       TabOrder = 2
       WordWrap = False
+      ExplicitWidth = 709
     end
   end
   object progressTimer: TTimer
-    Interval = 10
+    Interval = 5
     OnTimer = progressTimerTimer
     Left = 240
     Top = 120
