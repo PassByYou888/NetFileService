@@ -1,0 +1,160 @@
+object NetFileServiceForm: TNetFileServiceForm
+  Left = 369
+  Height = 349
+  Top = 109
+  Width = 564
+  BorderStyle = bsDialog
+  Caption = 'NetFileServiceForm'
+  ClientHeight = 349
+  ClientWidth = 564
+  OnClose = FormClose
+  Position = poDesktopCenter
+  LCLVersion = '2.1.0.0'
+  object ListenStateLabel: TLabel
+    Left = 240
+    Height = 22
+    Top = 16
+    Width = 8
+    Caption = '..'
+    ParentColor = False
+  end
+  object BindEdit: TLabeledEdit
+    Left = 132
+    Height = 32
+    Top = 8
+    Width = 105
+    EditLabel.AnchorSideTop.Control = BindEdit
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = BindEdit
+    EditLabel.AnchorSideBottom.Control = BindEdit
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 14
+    EditLabel.Height = 22
+    EditLabel.Top = 13
+    EditLabel.Width = 115
+    EditLabel.Caption = 'Bind IP(IP4/IP6):'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    TabOrder = 0
+    Text = '0.0.0.0'
+  end
+  object PortEdit: TLabeledEdit
+    Left = 132
+    Height = 32
+    Top = 48
+    Width = 68
+    EditLabel.AnchorSideTop.Control = PortEdit
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = PortEdit
+    EditLabel.AnchorSideBottom.Control = PortEdit
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 52
+    EditLabel.Height = 22
+    EditLabel.Top = 53
+    EditLabel.Width = 77
+    EditLabel.Caption = 'Listen port:'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    TabOrder = 1
+    Text = '7456'
+  end
+  object ShareDirEdit: TLabeledEdit
+    Left = 132
+    Height = 32
+    Top = 128
+    Width = 381
+    EditLabel.AnchorSideTop.Control = ShareDirEdit
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = ShareDirEdit
+    EditLabel.AnchorSideBottom.Control = ShareDirEdit
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 18
+    EditLabel.Height = 22
+    EditLabel.Top = 133
+    EditLabel.Width = 111
+    EditLabel.Caption = 'Share Directory:'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    TabOrder = 2
+    OnExit = ShareDirEditExit
+  end
+  object BrowseButton: TButton
+    Left = 520
+    Height = 25
+    Top = 128
+    Width = 26
+    Caption = '..'
+    OnClick = BrowseButtonClick
+    TabOrder = 3
+  end
+  object StartServiceButton: TButton
+    Left = 132
+    Height = 32
+    Top = 176
+    Width = 105
+    Caption = 'Start Service.'
+    OnClick = StartServiceButtonClick
+    TabOrder = 4
+  end
+  object PasswdEdit: TLabeledEdit
+    Left = 132
+    Height = 32
+    Top = 88
+    Width = 85
+    EchoMode = emPassword
+    EditLabel.AnchorSideTop.Control = PasswdEdit
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = PasswdEdit
+    EditLabel.AnchorSideBottom.Control = PasswdEdit
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 56
+    EditLabel.Height = 22
+    EditLabel.Top = 93
+    EditLabel.Width = 73
+    EditLabel.Caption = 'Password:'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    PasswordChar = '*'
+    TabOrder = 5
+    Text = 'admin'
+  end
+  object StopServiceButton: TButton
+    Left = 243
+    Height = 32
+    Top = 176
+    Width = 50
+    Caption = 'Stop.'
+    OnClick = StopServiceButtonClick
+    TabOrder = 6
+  end
+  object Memo: TMemo
+    Left = 56
+    Height = 89
+    Top = 224
+    Width = 477
+    ScrollBars = ssVertical
+    TabOrder = 7
+    WordWrap = False
+  end
+  object ShowPasswdCheckBox: TCheckBox
+    Left = 224
+    Height = 26
+    Top = 96
+    Width = 68
+    Caption = 'Show'
+    OnChange = ShowPasswdCheckBoxChange
+    TabOrder = 8
+  end
+  object progressTimer: TTimer
+    Interval = 5
+    OnTimer = progressTimerTimer
+    Left = 348
+    Top = 92
+  end
+  object StateTimer: TTimer
+    Interval = 500
+    OnTimer = StateTimerTimer
+    Left = 428
+    Top = 92
+  end
+end

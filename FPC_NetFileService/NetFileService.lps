@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="13">
+      <Unit0>
+        <Filename Value="NetFileService.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="13" Y="13"/>
+        <UsageCount Value="22"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="netfileservicefrm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NetFileServiceForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NetFileServiceFrm"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="250"/>
+        <CursorPos X="57" Y="257"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="include\CoreClasses.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="21"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="include\Synapse.FPC\CommunicationFramework_Client_Synapse.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="21"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="include\Synapse.FPC\CommunicationFramework_Server_Synapse.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="315"/>
+        <CursorPos Y="331"/>
+        <UsageCount Value="21"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="include\Synapse.FPC\source\synsock.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="21"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="include\zDefine.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos Y="25"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarus\lcl\dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="734"/>
+        <CursorPos X="62" Y="749"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="include\UnicodeMixedLib.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1648"/>
+        <CursorPos Y="1664"/>
+        <UsageCount Value="10"/>
+        <Bookmarks Count="1">
+          <Item0 X="14" Y="1664" ID="1"/>
+        </Bookmarks>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="46"/>
+        <CursorPos X="41" Y="70"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\freepascal-master\rtl\objpas\sysutils\filutilh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="186"/>
+        <CursorPos X="10" Y="202"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\freepascal-master\rtl\objpas\sysutils\filutil.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="519"/>
+        <CursorPos Y="533"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="include\PascalStrings.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1343"/>
+        <CursorPos Y="1362"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+    </Units>
+    <JumpHistory Count="6" HistoryIndex="5">
+      <Position1>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="226" Column="8" TopLine="216"/>
+      </Position1>
+      <Position2>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="228" Column="25" TopLine="216"/>
+      </Position2>
+      <Position3>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="224" Column="25" TopLine="216"/>
+      </Position3>
+      <Position4>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="226" TopLine="216"/>
+      </Position4>
+      <Position5>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="224" Column="22" TopLine="216"/>
+      </Position5>
+      <Position6>
+        <Filename Value="netfileservicefrm.pas"/>
+        <Caret Line="232" Column="46" TopLine="249"/>
+      </Position6>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

@@ -16,7 +16,11 @@
 
 **方便大家日常使用和学习，我把NetFileService做成了开源项目**
 
-### 更新说明
+### 2021-3-14最近更新
+
+- FileService使用lazarus+fpc移植到了arm linux，p2pVM支持良好，需要自行搭建linux下的Lazarus环境
+
+### 过去更新
 
 - 新增支持文件拖动，可直接将文件拖至客户端完成上传
 - 客户端可显示密码
